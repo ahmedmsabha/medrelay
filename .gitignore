@@ -1,0 +1,36 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Safety rule: never commit audio, images, or real patient data
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.webm
+*.flac
+*.opus
+*.jpg
+*.jpeg
+*.png
+*.heic
+data/*
+!data/README.md
+evals/asr/audio/
+
+# Local DBs
+*.db
+*.sqlite3
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
