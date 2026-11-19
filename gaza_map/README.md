@@ -16,6 +16,13 @@ This is a side project inside the MedRelay repository; it is not part of the Med
 - Per governorate: all diseases side by side, service readiness for chronic disease and mental health (HeRAMS),
   under-5 share of acute watery diarrhoea, weekly reporting coverage.
 - Shareable views: `?lang=en&tab=location&loc=rafah&disease=awd&year=2025`.
+- **Key facts** (landing tab): six facts computed from `data.json` at page load (nothing typed by hand), each
+  with its caveat and a link to the view it comes from, plus a hand-checked further-reading list
+  (`reference/further_reading.csv`).
+- Every view: the address bar always equals the current view (copy-link button), a CSV download of the
+  numbers behind it, and a "how was this number calculated?" box showing cases ÷ consultations × 1,000.
+- The trend axis is scaled on comparable months; months with fewer than 20 reporting sites are shaded and
+  clipped (▲) so early 2024 cannot flatten the rest of the chart.
 
 ## Honest limits (also shown on the site)
 

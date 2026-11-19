@@ -5,8 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>خريطة الأمراض والرعاية في غزة · Gaza Disease &amp; Care Map</title>
 <meta name="description" content="Aggregated public surveillance data (WHO/MoH EWARS, WHO HeRAMS) on non-injury diseases and health-service readiness in the Gaza Strip, 2024–2026. Not medical advice.">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
-<link rel="stylesheet" href="style.css">
+<meta property="og:type" content="website">
+<meta property="og:title" content="خريطة الأمراض والرعاية في غزة · Gaza Disease &amp; Care Map">
+<meta property="og:description" content="Non-injury disease surveillance and health-service readiness in the Gaza Strip, 2024–2026, from published WHO/MoH data. Every number has a source and a caveat. Not medical advice.">
+<meta property="og:image" content="screenshots/map-ar.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" integrity="sha512-Zcn6bjR/8RZbLEpLIeOwNtzREBAJnUKESxces60Mpoj+2okopSAcSUIUOseddDm0cxnGQzxIR7vJgsLZbdLE3w==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <header class="top">
@@ -27,6 +32,8 @@
       <select id="disease"></select></label>
     <label><span id="l-year"></span>
       <select id="year"></select></label>
+    <div class="actions"><button type="button" id="copy-link" class="ghost"></button>
+      <button type="button" id="dl-csv" class="ghost"></button><span id="copied" class="note" aria-live="polite"></span></div>
   </section>
   <p class="note" id="disease-note" hidden></p>
 
@@ -48,7 +55,7 @@
   <p id="t-foot" class="note"></p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-<script src="app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>

@@ -254,6 +254,9 @@ SOURCES = [
      "and different reports give different values for similar dates."),
     ("health_cluster", "Health Cluster bulletin, November 2025", "Health Cluster oPt", "official statistic",
      None, "2025-11", "Repeats an OCHA update figure; not an independent measurement."),
+    ("ocha_sitrep", "OCHA Humanitarian Situation Reports (oPt)", "UN OCHA", "official statistic",
+     "https://www.ochaopt.org/content/humanitarian-situation-report-13-november-2026", "2026-10",
+     "Weekly web reports quoting MoH and cluster figures; cite the section, there are no page numbers."),
     ("pcbs_whd2026", "World Health Day 2026 statement", "PCBS", "official statistic",
      None, "2026-03", "Gives no primary source for its stock figures; they conflict with WHO-quoted MoH figures."),
 ]

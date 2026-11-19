@@ -32,6 +32,18 @@ def rows(con: sqlite3.Connection, sql: str, *args) -> list[tuple]:
     return con.execute(sql, args).fetchall()
 
 
+READING = ROOT / "gaza_map/reference/further_reading.csv"
+
+
+def reading(path: Path = READING) -> list[dict]:
+    """Hand-checked list of studies/reports (each opened and its title confirmed); empty if absent."""
+    if not path.exists():
+        return []
+    import csv
+    with path.open(newline="", encoding="utf-8") as f:
+        return [dict(r) for r in csv.DictReader(f)]
+
+
 def export(db_path: Path = DB_PATH, out: Path = OUT) -> dict:
     con = sqlite3.connect(db_path)
     try:
@@ -77,7 +89,7 @@ def export(db_path: Path = DB_PATH, out: Path = OUT) -> dict:
         def put(d, loc, year, cases, cons, weeks):
             comparable = d not in late or (d in starts and year * 100 + 1 >= starts[d])
             yearly.setdefault(d, {}).setdefault(loc, {})[str(year)] = {
-                "per_1000": round(cases * 1000.0 / cons, 2), "cases": cases, "weeks": weeks,
+                "per_1000": round(cases * 1000.0 / cons, 2), "cases": cases, "consultations": cons, "weeks": weeks,
                 "comparable": comparable}
 
         for did, lid, year, cases, cons, weeks in rows(
@@ -162,7 +174,7 @@ def export(db_path: Path = DB_PATH, out: Path = OUT) -> dict:
             "months": months, "sites_month": sites_month, "sites_median": sites_median, "overview": overview,
             "monthly": monthly, "yearly": yearly, "coverage": coverage,
             "herams": {"domains": domains, "hsdu": hsdu, "ncd": ncd},
-            "medicine": medicine, "supply": supply, "awd_under5_share": age,
+            "medicine": medicine, "supply": supply, "reading": reading(), "service_signals": reading(ROOT / "gaza_map/reference/service_signals.csv"), "awd_under5_share": age,
         }
     finally:
         con.close()

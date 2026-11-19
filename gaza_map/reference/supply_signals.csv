@@ -1,7 +1,8 @@
 as_of,pct_zero_stock,wording,source_id,source_ref,caveat
 2025-06-30,16,zero stock,who_sitreps,"WHO oPt Emergency Sitrep 61, p3",MoH figure as quoted by WHO; same bullet gives consumables 14% and lab supplies 9%
-2025-10,55,zero stock,who_sitreps,"WHO oPt Emergency Sitrep 66, p3","MoH figure; the same page says 343 of 622 essential medicines had under one month of supply"
-2025-11,55,stocked out,health_cluster,"Health Cluster bulletin Nov 2025, p2","Cites OCHA update 340; agrees with Sitrep 66"
-2026-03-31,44,zero stock,who_sitreps,"WHO oPt Emergency Sitrep 68, p3","Covers 1 Feb-31 Mar 2026; the same bullet gives consumables 46% and laboratory reagents 84%"
+2025-10,55,zero stock,who_sitreps,"WHO oPt Emergency Sitrep 66, p3",MoH figure; the same page says 343 of 622 essential medicines had under one month of supply
+2025-11,55,stocked out,health_cluster,"Health Cluster bulletin Nov 2025, p2",Cites OCHA update 340; agrees with Sitrep 66
+2026-03-31,44,zero stock,who_sitreps,"WHO oPt Emergency Sitrep 68, p3",Covers 1 Feb-31 Mar 2026; the same bullet gives consumables 46% and laboratory reagents 84%
 2026-03,51,zero stock,pcbs_whd2026,"PCBS World Health Day 2026 statement, section on zero stock","Data 'through March 2026'; no footnote or primary source; conflicts with the 44% above for about the same date. The same statement also says '70% depleted' without defining it, so 70% is not shown"
-2026-08-31,47,out of stock,who_sitreps,"WHO oPt Emergency Sitrep 72, p3","MoH figure for July-August 2026; 'out of stock' may not be the same measure as 'zero stock'"
+2026-08-31,47,out of stock,who_sitreps,"WHO oPt Emergency Sitrep 72, p3",MoH figure for July-August 2026; 'out of stock' may not be the same measure as 'zero stock'
+2026-10,42,zero stock,ocha_sitrep,"OCHA Humanitarian Situation Report, 13 Nov 2026, section 'Water, health and health system conditions'","MoH figure cited by OCHA (key-figure box credits Health Cluster/MoH). The box says 'of essential medicines', the body text says 'of all medicines'. Same paragraph: about 55% of essential chemotherapy medicines and about 73% of open-heart surgery and catheterization supplies at zero stock"

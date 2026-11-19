@@ -123,7 +123,7 @@ def test_medicine_classes_are_sourced_and_name_no_drugs(con):
 
 def test_supply_signals_keep_one_row_per_source(con):
     rows = q(con, "SELECT as_of, pct_zero_stock, source_id FROM supply_signals ORDER BY as_of")
-    assert len(rows) == 6 and all(0 <= r[1] <= 100 for r in rows)
+    assert len(rows) == 7 and all(0 <= r[1] <= 100 for r in rows)
     assert len({(r[0], r[2]) for r in rows}) == len(rows)
 
 

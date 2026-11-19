@@ -99,7 +99,7 @@ def test_export_medicine_rows_are_sourced_and_every_source_has_caveats(exported)
     data, _ = exported
     assert data["meta"]["medicine_needs_rows"] == sum(len(v) for v in data["medicine"].values()) >= 20
     assert all(m["source"] in ("who", "cdc") and m["url"] for v in data["medicine"].values() for m in v)
-    assert len(data["supply"]) == 6 and len(data["herams"]["ncd"]) == 20
+    assert len(data["supply"]) == 7 and len(data["herams"]["ncd"]) == 20
     assert all(s["caveats"] and s["type"] for s in data["meta"]["sources"])
     text = json.dumps(data["medicine"]).lower()  # classes only: no dose wording, no strengths
     assert "dose" not in text and " mg" not in text
