@@ -29,6 +29,7 @@ Design rules
 from __future__ import annotations
 
 import csv
+import json
 import sqlite3
 from datetime import date
 from pathlib import Path
@@ -40,6 +41,7 @@ CLEAN = ROOT / "data/clean"
 HERAMS = ROOT / "data/raw/herams"
 REF = ROOT / "gaza_map/reference/diseases.csv"
 DB_PATH = ROOT / "data/db/gaza_health.sqlite"
+GEO = ROOT / "gaza_map/site/data/governorates.geojson"  # made by build_geo.py (OCHA COD-AB)
 
 SCHEMA = """
 PRAGMA foreign_keys = ON;
@@ -61,7 +63,7 @@ CREATE TABLE locations (
   name_en     TEXT NOT NULL,
   name_ar     TEXT NOT NULL,
   level       TEXT NOT NULL CHECK (level IN ('strip','governorate')),
-  lat         REAL,   -- NULL until M4 takes coordinates from a cited boundary layer
+  lat         REAL,   -- centre point from the OCHA boundary layer; NULL for the strip as a whole
   lon         REAL
 );
 CREATE TABLE location_aliases (
@@ -236,6 +238,10 @@ def build(db_path: Path = DB_PATH) -> dict[str, int]:
         con.executemany("INSERT INTO sources VALUES (?,?,?,?,?,?,?)", SOURCES)
         con.executemany("INSERT INTO locations(key,name_en,name_ar,level) VALUES (?,?,?,?)", LOCATIONS)
         loc = {k: i for i, k in con.execute("SELECT location_id, key FROM locations")}
+        if GEO.exists():
+            for f in json.loads(GEO.read_text(encoding="utf-8"))["features"]:
+                pr = f["properties"]
+                con.execute("UPDATE locations SET lat=?, lon=? WHERE key=?", (pr["lat"], pr["lon"], pr["key"]))
         con.executemany("INSERT INTO location_aliases VALUES (?,?)",
                         [(a, loc[k]) for a, k in ALIASES.items()])
 

@@ -52,7 +52,8 @@ def test_missing_weeks_have_no_reporting_row(con):
 
 def test_unknown_stays_null(con):
     assert q(con, "SELECT COUNT(*) FROM observations WHERE sex IS NOT NULL")[0][0] == 0
-    assert q(con, "SELECT COUNT(*) FROM locations WHERE lat IS NOT NULL")[0][0] == 0
+    # the strip as a whole has no single centre; the 5 governorates take theirs from the OCHA layer
+    assert q(con, "SELECT COUNT(*) FROM locations WHERE key='strip' AND lat IS NOT NULL")[0][0] == 0
     # chickenpox has no deaths field: NULL, not 0
     assert q(con, "SELECT COUNT(*) FROM observations o JOIN diseases d USING(disease_id) "
                   "WHERE d.key='chickenpox' AND o.deaths IS NOT NULL")[0][0] == 0

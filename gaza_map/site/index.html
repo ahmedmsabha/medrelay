@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>خريطة الأمراض والرعاية في غزة · Gaza Disease &amp; Care Map</title>
+<meta name="description" content="Aggregated public surveillance data (WHO/MoH EWARS, WHO HeRAMS) on non-injury diseases and health-service readiness in the Gaza Strip, 2024–2026. Not medical advice.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1 id="t-title"></h1>
+    <p id="t-sub" class="sub"></p>
+  </div>
+  <button id="lang" class="lang" type="button" aria-label="Language">English</button>
+</header>
+
+<aside class="banner" id="t-banner" role="note"></aside>
+
+<main>
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+
+  <section class="controls" id="controls">
+    <label id="l-disease-wrap"><span id="l-disease"></span>
+      <select id="disease"></select></label>
+    <label><span id="l-year"></span>
+      <select id="year"></select></label>
+  </section>
+  <p class="note" id="disease-note" hidden></p>
+
+  <div class="grid">
+    <section class="card map-card">
+      <div id="map" dir="ltr" aria-label="map"></div>
+      <div class="legend" id="legend"></div>
+      <p class="note" id="map-note"></p>
+    </section>
+    <section class="card" id="panel"></section>
+  </div>
+</main>
+
+<footer>
+  <h2 id="t-limits-h"></h2>
+  <ul id="t-limits"></ul>
+  <h2 id="t-sources-h"></h2>
+  <ul id="sources"></ul>
+  <p id="t-foot" class="note"></p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
