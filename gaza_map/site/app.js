@@ -45,11 +45,11 @@ const I18N = {
     f1: (v, c, y) => [`${v}`, `لكل 1000 استشارة: التهاب الجهاز التنفسي الحاد هو الأكثر تسجيلاً في ${y} (${c} حالة مشتبهة)`, "الاستشارات تشمل إصابات الحرب، والمعدل ليس معدل إصابة في السكان."],
     f2: (v, a, y) => [`${v}`, `لكل 1000 استشارة: الجرب/القمل والقوباء والجدري المائي معاً في ${y}، أعلى من الإسهال المائي (${a})`, "هذه الأمراض أُضيفت للنظام منتصف 2025، فلا نقارنها بما قبل. الجمع صحيح لأن المقام واحد."],
     f3: (g, v, y) => [`${v}`, `لكل 1000 استشارة: ${g} أعلى محافظة في الإسهال المائي الحاد في ${y}`, "الفروق بين المحافظات تتأثر بنوع المرافق المبلِّغة في كل منها."],
-    f4: (f, e) => [`${f} / ${e}`, "وحدة خدمة صحية تعمل ولو جزئياً من التي قيّمها HeRAMS (يونيو 2025)", "تقرير WHO غير نهائي، ويشمل المرافق المبلِّغة لـ HeRAMS فقط."],
-    f5: (lo, hi, last, d) => [`${lo}%–${hi}%`, `من الأدوية الأساسية عند «صفر مخزون» حسب المصدر والتاريخ؛ آخر رقم ${last}% (${d})`, "المصادر تتعارض لتواريخ متقاربة؛ لذلك نعرض المدى لا رقماً واحداً."],
-    f6: (a, b, c, d) => [`${a} → ${b}`, `يوماً: متوسط تأخر وصول التقارير، من 2024 إلى 2026؛ واكتمال التقارير ارتفع من ${c}% إلى ${d}%`, "البيانات صارت أكمل وأسرع؛ لهذا بالذات لا تُقارن 2024 بما بعدها."],
+    f4: (f, e) => [`${f} من ${e}`, "وحدة خدمة صحية تعمل ولو جزئياً من التي قيّمها HeRAMS (يونيو 2025)", "تقرير WHO غير نهائي، ويشمل المرافق المبلِّغة لـ HeRAMS فقط."],
+    f5: (lo, hi, last, d) => [`${lo}%–${hi}%`, `من الأدوية الأساسية عند «صفر مخزون» حسب المصدر والتاريخ؛ آخر رقم ${iso(last + "%")} (${iso(d)})`, "المصادر تتعارض لتواريخ متقاربة؛ لذلك نعرض المدى لا رقماً واحداً."],
+    f6: (a, b, c, d) => [`من ${a} إلى ${b}`, `يوماً: متوسط تأخر وصول التقارير، من 2024 إلى 2026؛ واكتمال التقارير ارتفع من ${c}% إلى ${d}%`, "البيانات صارت أكمل وأسرع؛ لهذا بالذات لا تُقارن 2024 بما بعدها."],
     readH: "للقراءة والتحقق",
-    newer: (r) => `أحدث رقم بمقياس مختلف: ${r.value} ${r.measure_ar} (${r.source}، ${r.as_of}).`,
+    newer: (r) => `أحدث رقم بمقياس مختلف: ${iso(r.value)} ${r.measure_ar} (${iso(r.source + ", " + r.as_of)}).`,
     limitsH: "حدود البيانات",
     limits: [
       "المصدر الرئيسي (EWARS) يعدّ حالات مشتبه بها من مرافق مبلِّغة فقط، وعدد هذه المرافق يتغير، لذا نقسم على إجمالي الاستشارات. هذا مقياس تقريبي وليس معدل إصابة.",
@@ -143,6 +143,8 @@ function localStorageSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {
 
 const T = () => I18N[state.lang];
 // numbers, dates and ranges keep left-to-right order inside right-to-left text
+// Unicode isolate for plain-text (escaped) strings: keeps a date or % in left-to-right order
+const iso = (s) => "\u2066" + s + "\u2069";
 const ltr = (s) => `<bdi dir="ltr">${esc(s)}</bdi>`;
 // a formula on its own left-to-right line, so wrapping can never reorder its parts
 const formula = (c) => `<code class="formula" dir="ltr">${esc(c.cases.toLocaleString("en") + " ÷ " + c.consultations.toLocaleString("en") + " × 1,000 = " + c.per_1000)}</code>`;
@@ -390,7 +392,7 @@ function findingsHtml() {
   const o = DATA.overview;
   if (o["2024"] && o[y]) cards.push([t.f6(o["2024"].mean_delay_days, o[y].mean_delay_days,
     Math.round(o["2024"].mean_completeness * 100), Math.round(o[y].mean_completeness * 100)), { tab: "disease", disease: "ari", year: y }]);
-  const html = cards.map(([[big, text, cav], q]) => `<article class="fact"><p><span class="big">${ltr(big)}</span> ${esc(text)}</p>
+  const html = cards.map(([[big, text, cav], q]) => `<article class="fact"><p><span class="big">${/[\u0600-\u06FF]/.test(big) ? esc(big) : ltr(big)}</span> ${esc(text)}</p>
     <p class="note"><strong>${esc(t.fCaveat)}:</strong> ${esc(cav)}</p><a href="${esc(link(q))}" data-view="${esc(JSON.stringify(q))}">${esc(t.fOpen)} →</a></article>`).join("");
   const reading = (DATA.reading || []).map((r) => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>
     <span class="note">${esc(r.who)} · ${ltr(r.date)}${r.kind ? " · " + esc(r.kind) : ""}</span><br><span class="note">${esc(state.lang === "ar" && r.finding_ar ? r.finding_ar : r.finding)}</span></li>`).join("");

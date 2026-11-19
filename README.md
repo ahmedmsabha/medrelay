@@ -33,3 +33,12 @@ evals/      asr, triage, vision datasets and reports
 data/       synthetic only; everything else is git-ignored
 scripts/    one-off utilities
 ```
+
+## Side project: Gaza Disease & Care Map
+
+A static, bilingual (Arabic/English) map of non-injury disease surveillance and health-service readiness in
+the Gaza Strip, 2024–2026, built from published WHO/MoH data. Separate from the MedRelay roadmap.
+Details, screenshots and limits: [gaza_map/README.md](gaza_map/README.md).
+
+![Gaza Disease & Care Map: key facts tab](gaza_map/site/screenshots/facts-ar.png)
+

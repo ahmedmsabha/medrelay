@@ -21,7 +21,7 @@ def test_arabic_and_english_have_the_same_keys():
     js = (SITE / "app.js").read_text(encoding="utf-8")
     block = js[js.index("const I18N"):js.index("\n};\n") + 3]
     code = block + "\nconsole.log(JSON.stringify([Object.keys(I18N.ar).sort(), Object.keys(I18N.en).sort()]));"
-    out = subprocess.run(["node", "-e", "const ltr=(s)=>s, formula=()=>'';" + code], capture_output=True, text=True, check=True)
+    out = subprocess.run(["node", "-e", "const ltr=(s)=>s, iso=(s)=>s, formula=()=>'';" + code], capture_output=True, text=True, check=True)
     ar, en = json.loads(out.stdout)
     assert ar == en, set(ar) ^ set(en)
 

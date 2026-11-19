@@ -6,9 +6,22 @@ OCHA boundaries. **A display of published data: not medical advice, not a diagno
 
 This is a side project inside the MedRelay repository; it is not part of the MedRelay roadmap.
 
+## Screenshots
+
+**Key facts (landing tab, Arabic):** six facts computed from the data at page load, each with its caveat,
+plus a further-reading list checked against Europe PMC.
+
+![Key facts tab in Arabic](site/screenshots/facts-ar.png)
+
 | By disease (Arabic) | By location (English) |
 |---|---|
-| ![Map and trend](site/screenshots/map-ar.png) | ![Location details](site/screenshots/location-en.png) |
+| ![Map, monthly trend with few-site months shaded, and number of reporting sites](site/screenshots/map-ar.png) | ![Khan Yunis: all diseases by year, HeRAMS readiness, reporting coverage](site/screenshots/location-en.png) |
+
+| By medicine class (English) | Phone (English) |
+|---|---|
+| ![Sourced medicine classes, dated stock-out figures, NCD service readiness](site/screenshots/medicine-en.png) | ![Key facts on a phone-width screen](site/screenshots/mobile-facts-en.png) |
+
+Screenshots taken 2026-11-19 with headless Chrome from the local site (`python3 -m http.server 8765 --directory gaza_map/site`).
 
 ## What it shows
 
