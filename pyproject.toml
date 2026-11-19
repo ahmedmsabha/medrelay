@@ -20,7 +20,7 @@ dev = [
 package = false
 
 [tool.pytest.ini_options]
-testpaths = ["backend/tests"]
+testpaths = ["backend/tests", "gaza_map/tests"]
 pythonpath = ["."]
 
 [tool.ruff]

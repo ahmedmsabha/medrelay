@@ -1,0 +1,18 @@
+card,disease_key,name_en,name_ar,group,note
+ARI Trend,ari,Acute respiratory infection,التهاب الجهاز التنفسي الحاد,respiratory,
+AWD Trend,awd,Acute watery diarrhoea,إسهال مائي حاد,gastrointestinal,reported with under-5 / over-5 split
+Bloody Diarrhoea Trend,bloody_diarrhoea,Bloody diarrhoea,إسهال دموي,gastrointestinal,
+AJS Trend,ajs,Acute jaundice syndrome,متلازمة اليرقان الحاد,gastrointestinal,often linked to hepatitis A
+AFP Trend,afp,Acute flaccid paralysis,شلل رخو حاد,neurological,polio surveillance indicator
+Suspected Measles Trend,measles,Suspected measles,حصبة (مشتبهة),vaccine_preventable,suspected cases only
+Suspected Mumps Trend,mumps,Suspected mumps,نكاف (مشتبه),vaccine_preventable,suspected cases only
+Probable Viral Meningitis Trend,viral_meningitis,Probable viral meningitis,التهاب سحايا فيروسي (محتمل),neurological,
+Probable Bacterial Meningitis Trend,bacterial_meningitis,Probable bacterial meningitis,التهاب سحايا بكتيري (محتمل),neurological,
+Suspected Tuberculosis Trend,tuberculosis,Suspected tuberculosis,سل (مشتبه),respiratory,
+Suspected Cholera,cholera,Suspected cholera,كوليرا (مشتبهة),gastrointestinal,reported with under-5 / over-5 split
+Suspected Diphtheria,diphtheria,Suspected diphtheria,دفتيريا (مشتبهة),vaccine_preventable,
+Suspected Tetanus,tetanus,Suspected tetanus,كزاز (مشتبه),vaccine_preventable,
+Chickenpox Trend,chickenpox,Chickenpox,جدري الماء,skin,
+Ectoparasitic Trend,ectoparasitic,Ectoparasitic infestations (scabies and lice),طفيليات خارجية (جرب وقمل),skin,
+Impetigo Trend,impetigo,Impetigo,قوباء,skin,
+Unusual Events,unusual_events,Unusual events,أحداث غير عادية,event,not a disease: count of reported events
