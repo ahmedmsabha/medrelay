@@ -180,8 +180,37 @@ def awd_age_share(path: Path = CLEAN / "ewars_weekly.csv") -> list[dict]:
     return out
 
 
-def peaks(rows: list[dict]) -> list[dict]:
-    """Pooled (strip-wide) peak week per disease: the week with the highest per-1,000 rate."""
+def low_site_weeks(path: Path = CLEAN / "ewars_reporting_sites.csv") -> set[tuple[int, int]]:
+    """(year, epi_week) with fewer than 20 reporting locations (first 14 weeks of 2024: 1-9 sites)."""
+    if not path.exists():
+        return set()
+    with path.open(newline="", encoding="utf-8") as f:
+        return {(int(r["year"]), int(r["epi_week"])) for r in csv.DictReader(f) if r["low_sites"] == "1"}
+
+
+def median_sites(path: Path = CLEAN / "ewars_reporting_sites.csv") -> dict[int, float]:
+    if not path.exists():
+        return {}
+    by: dict[int, list[int]] = defaultdict(list)
+    with path.open(newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            by[int(r["year"])].append(int(r["reporting_locations"]))
+    out = {}
+    for y, v in by.items():
+        v.sort()
+        mid = len(v) // 2
+        out[y] = v[mid] if len(v) % 2 else (v[mid - 1] + v[mid]) / 2
+    return out
+
+
+def peaks(rows: list[dict], exclude: set[tuple[int, int]] | None = None) -> list[dict]:
+    """Pooled (strip-wide) peak week per disease: the week with the highest per-1,000 rate.
+
+    Weeks in `exclude` (very few reporting sites) cannot be a peak: a rate from 5 facilities is not
+    comparable with one from 200 (see docs/study-notes/10-reporting-sites.md).
+    """
+    exclude = exclude or set()
+    rows = [r for r in rows if (r["year"], r["epi_week"]) not in exclude]
     acc = _sum_by(rows, lambda r: (r["disease"], r["year"], r["epi_week"], r["week_start"]))
     # consultations summed across governorates for that week (each governorate counted once)
     best: dict = {}
@@ -226,8 +255,13 @@ def main() -> None:
     late = {d: f"{y}-WE{w:02d}" for d, (y, w) in starts.items()}
     lines += ["", "* = disease not tracked for the whole period; not comparable. First case seen:"]
     lines += [f"  {d:<20} {v}" for d, v in sorted(late.items())]
-    lines += ["", "Peak week per disease (pooled, weeks with >= 5,000 consultations):"]
-    for p in peaks(rows):
+    ms = median_sites()
+    if ms:
+        lines += ["", "Median reporting locations per week (strip-wide): "
+                  + "  ".join(f"{y}: {v:g}" for y, v in sorted(ms.items())),
+                  "Weeks with < 20 reporting locations are excluded from the peak table."]
+    lines += ["", "Peak week per disease (pooled, weeks with >= 5,000 consultations and >= 20 reporting locations):"]
+    for p in peaks(rows, low_site_weeks()):
         lines.append(f"  {p['disease']:<20} {p['year']}-WE{p['epi_week']:02d} ({p['week_start']}) "
                      f"{p['per_1000']} per 1,000 ({p['cases']} cases)")
     lines += ["", "Under-5 share of watery diarrhoea cases (%):"]

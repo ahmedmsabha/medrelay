@@ -1,0 +1,21 @@
+service,service_ar,pct_available,pct_partial,pct_not_available,n_hsdu_expected,n_not_up_to_standard,pct_not_up_to_standard_printed
+Promote self-care,تعزيز الرعاية الذاتية,32,48,20,25,17,68
+Noncommunicable diseases clinic,عيادة الأمراض غير السارية,36,41,23,22,14,63.6
+"Asthma and chronic obstructive pulmonary disease (classification, treatment and follow up)",الربو والانسداد الرئوي المزمن,39,54,7,28,17,60.7
+"Hypertension (early detection, management and counseling)",ارتفاع ضغط الدم,42,52,6,33,19,57.6
+"Diabetes (early detection, management, foot-care, and counseling)",السكري,39,55,6,33,20,60.6
+Inpatient acute rehabilitation,التأهيل الحاد للمرضى المقيمين,23,62,15,13,10,76.9
+Outpatient rehabilitation services,خدمات التأهيل الخارجية,16,68,16,19,16,84.2
+Prosthetics and orthotics,الأطراف الصناعية والجبائر,12,38,50,8,7,87.5
+Oral health and dental care,صحة الفم والأسنان,17,58,25,24,20,83.3
+Psychological first aid,الإسعاف النفسي الأولي,57,33,10,21,9,42.9
+Management of mental disorders,علاج الاضطرابات النفسية,21,58,21,19,15,78.9
+Inpatient care for management of mental disorders,الرعاية الداخلية للاضطرابات النفسية,0,86,14,7,7,100
+Cancer diagnostics services,خدمات تشخيص السرطان,0,58,42,12,12,100
+Primary cancer screening (non-instrumental methods),الفحص الأولي للسرطان (دون أجهزة),31,31,38,13,9,69.2
+Mammography,التصوير الشعاعي للثدي,0,27,73,11,11,100
+Colonoscopy,تنظير القولون,23,38,38,13,10,76.9
+Cancer treatment services,خدمات علاج السرطان,0,75,25,4,4,100
+Chemotherapy,العلاج الكيميائي,33,0,67,3,2,66.7
+Radiological treatment,العلاج الإشعاعي,0,0,100,2,2,100
+Hematological and oncohematological care in all settings,رعاية أمراض الدم والأورام الدموية,0,100,0,3,3,100

@@ -96,7 +96,7 @@ def test_by_location_exposes_partial_years(con):
 
 
 def test_medicine_needs_requires_a_source(con):
-    assert q(con, "SELECT COUNT(*) FROM medicine_needs")[0][0] == 0  # nothing invented from memory
+    assert q(con, "SELECT COUNT(*) FROM medicine_needs WHERE source_id IS NULL OR source_ref = ''")[0][0] == 0
     db = con[0]
     with pytest.raises(sqlite3.IntegrityError):
         db.execute("INSERT INTO medicine_needs(disease_id, medicine_class, source_id, source_ref) "
@@ -105,7 +105,33 @@ def test_medicine_needs_requires_a_source(con):
         db.execute("INSERT INTO medicine_needs(disease_id, medicine_class, source_id, source_ref) "
                    "VALUES (1, 'x', 'no_such_source', 'p1')")
     db.rollback()
-    assert q(con, "SELECT COUNT(*) FROM v_by_medicine")[0][0] == 0
+    assert q(con, "SELECT COUNT(*) FROM v_by_medicine")[0][0] > 0
+
+
+def test_medicine_classes_are_sourced_and_name_no_drugs(con):
+    rows = q(con, "SELECT medicine_class, source_id, source_url FROM medicine_needs")
+    assert len(rows) >= 20
+    assert {r[1] for r in rows} <= {"who", "cdc"} and all(r[2].startswith("https://") for r in rows)
+    banned = ("amoxicillin", "paracetamol", "ibuprofen", "azithromycin", "ivermectin", "permethrin", "insulin",
+              "rifampicin", "isoniazid", "metformin", "mg", "dose")
+    text = " ".join(r[0].lower() for r in rows)
+    assert not any(w in text.split() or w in text for w in banned if len(w) > 3), text
+    # diseases with no source must have no row
+    assert q(con, "SELECT COUNT(*) FROM medicine_needs m JOIN diseases d USING(disease_id) "
+                  "WHERE d.key IN ('mumps','bloody_diarrhoea','afp')")[0][0] == 0
+
+
+def test_supply_signals_keep_one_row_per_source(con):
+    rows = q(con, "SELECT as_of, pct_zero_stock, source_id FROM supply_signals ORDER BY as_of")
+    assert len(rows) == 6 and all(0 <= r[1] <= 100 for r in rows)
+    assert len({(r[0], r[2]) for r in rows}) == len(rows)
+
+
+def test_ncd_services_match_printed_numbers(con):
+    rows = q(con, "SELECT pct_available + pct_partial + pct_not_available, n_hsdu_expected, n_not_up_to_standard "
+                  "FROM ncd_services")
+    assert len(rows) == 20
+    assert all(99 <= r[0] <= 101 and r[2] <= r[1] for r in rows)
 
 
 def test_herams_percentages_add_to_100(con):

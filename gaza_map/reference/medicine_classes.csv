@@ -1,0 +1,23 @@
+disease_key,medicine_class,class_ar,source_id,source_url,source_ref,note
+ari,Antibiotics (for bacterial pneumonia),مضادات حيوية (للالتهاب الرئوي البكتيري),who,https://www.who.int/news-room/fact-sheets/detail/pneumonia,"Pneumonia fact sheet, Treatment",ARI includes but is not only pneumonia; most ARI is viral and needs no antibiotic.
+awd,Oral rehydration salts,أملاح الإمهاء الفموي,who,https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease,"Diarrhoeal disease fact sheet, Treatment",
+awd,Zinc supplements,مكمّلات الزنك,who,https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease,"Diarrhoeal disease fact sheet, Treatment",
+awd,Intravenous fluids (severe dehydration),سوائل وريدية (الجفاف الشديد),who,https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease,"Diarrhoeal disease fact sheet, Treatment",
+cholera,Oral rehydration salts,أملاح الإمهاء الفموي,who,https://www.who.int/news-room/fact-sheets/detail/cholera,"Cholera fact sheet, Treatment",
+cholera,Intravenous fluids (severe dehydration),سوائل وريدية (الجفاف الشديد),who,https://www.who.int/news-room/fact-sheets/detail/cholera,"Cholera fact sheet, Treatment",
+cholera,Antibiotics (severe cases),مضادات حيوية (الحالات الشديدة),who,https://www.who.int/news-room/fact-sheets/detail/cholera,"Cholera fact sheet, Treatment",
+ajs,Supportive care (no specific treatment),رعاية داعمة (لا علاج نوعي),who,https://www.who.int/news-room/fact-sheets/detail/hepatitis-a,"Hepatitis A fact sheet, Treatment",AJS (acute jaundice syndrome) has several causes; hepatitis A is one of them.
+measles,Vitamin A supplements,مكمّلات فيتامين أ,who,https://www.who.int/news-room/fact-sheets/detail/measles,"Measles fact sheet, Treatment",No specific antiviral; supportive care. Prevention is the vaccine.
+bacterial_meningitis,"Antibiotics (urgent, intravenous)",مضادات حيوية (عاجلة، وريدية),who,https://www.who.int/news-room/fact-sheets/detail/meningitis,"Meningitis fact sheet, Treatment",Medical emergency; treatment should not wait for the lumbar puncture.
+bacterial_meningitis,"Corticosteroids (added to antibiotics, non-epidemic settings)",كورتيكوستيرويدات (مع المضاد الحيوي، في غير الأوبئة),who,https://www.who.int/news-room/fact-sheets/detail/meningitis,"Meningitis fact sheet, Treatment",
+viral_meningitis,Supportive care (usually resolves without treatment),رعاية داعمة (يشفى غالباً دون علاج),cdc,https://www.cdc.gov/meningitis/about/viral-meningitis.html,About Viral Meningitis,CDC page; U.S. guidance.
+tuberculosis,"Anti-TB antibiotics (combination, 4-6 months)",مضادات حيوية لعلاج السل (توليفة، 4-6 أشهر),who,https://www.who.int/news-room/fact-sheets/detail/tuberculosis,"Tuberculosis fact sheet, Treatment",Stopping early risks drug-resistant TB; resistant TB needs different medicines.
+tetanus,Tetanus immune globulin,غلوبولين مناعي للتيتانوس,who,https://www.who.int/news-room/fact-sheets/detail/tetanus,"Tetanus fact sheet, Treatment",
+tetanus,Antibiotics,مضادات حيوية,who,https://www.who.int/news-room/fact-sheets/detail/tetanus,"Tetanus fact sheet, Treatment",
+tetanus,Muscle-spasm control medicines,أدوية للسيطرة على التشنجات العضلية,who,https://www.who.int/news-room/fact-sheets/detail/tetanus,"Tetanus fact sheet, Treatment",
+diphtheria,Diphtheria antitoxin,مضاد سمّ الخناق,cdc,https://www.cdc.gov/diphtheria/hcp/clinical-guidance/index.html,"Clinical Guidance for Diphtheria, key points",Respiratory diphtheria: antitoxin plus antibiotics. CDC page; U.S. guidance.
+diphtheria,Antibiotics,مضادات حيوية,cdc,https://www.cdc.gov/diphtheria/hcp/clinical-guidance/index.html,"Clinical Guidance for Diphtheria, key points",Antibiotics alone are usually enough for skin (cutaneous) diphtheria.
+ectoparasitic,Topical antiparasitic creams (scabies),كريمات موضعية مضادة للطفيليات (الجرب),who,https://www.who.int/news-room/fact-sheets/detail/scabies,"Scabies fact sheet, Treatment",Oral treatment in severe cases; the whole household is treated; repeat to kill newly hatched mites.
+ectoparasitic,Head-lice treatments (topical),علاجات موضعية لقمل الرأس,cdc,https://www.cdc.gov/lice/hcp/clinical-care/index.html,Clinical Care of Head Lice,CDC page; U.S. guidance. Retreatment recommended if the product does not kill nits.
+chickenpox,Antiviral medicine (only for people at higher risk),دواء مضاد للفيروسات (لذوي الخطورة العالية فقط),cdc,https://www.cdc.gov/chickenpox/treatment/index.html,How to Treat Chickenpox,Aspirin must not be given to children with chickenpox (Reye's syndrome). CDC page.
+impetigo,Antibiotics,مضادات حيوية,cdc,https://www.cdc.gov/group-a-strep/about/impetigo.html,About Impetigo,CDC page; U.S. guidance.

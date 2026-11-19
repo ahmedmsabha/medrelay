@@ -12,9 +12,11 @@ Tables
   observations       EWARS weekly cases/deaths: location x week x disease x age group
   reporting          consultations per location x week (the denominator); only weeks that reported
   coverage           weeks expected vs reported per location x year
+  reporting_sites    strip-wide number of reporting locations per week (+ completeness/timeliness)
+  overview_totals    the dashboard's own headline totals per year (used to audit our numbers)
   facility_domains   HeRAMS service-domain availability (%) per location
   hsdu_functionality HeRAMS facilities evaluated vs at least partially functioning
-  medicine_needs     disease -> medicine CLASS, one row per sourced claim. EMPTY until sourced.
+  medicine_needs     disease -> medicine CLASS, one row per sourced claim (WHO/CDC pages, see reference/medicine_classes.csv)
 Views (the three groupings the site needs)
   v_cases_weekly, v_by_disease, v_by_location, v_by_medicine
 
@@ -40,6 +42,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CLEAN = ROOT / "data/clean"
 HERAMS = ROOT / "data/raw/herams"
 REF = ROOT / "gaza_map/reference/diseases.csv"
+REFDIR = ROOT / "gaza_map/reference"
 DB_PATH = ROOT / "data/db/gaza_health.sqlite"
 GEO = ROOT / "gaza_map/site/data/governorates.geojson"  # made by build_geo.py (OCHA COD-AB)
 
@@ -51,7 +54,7 @@ CREATE TABLE sources (
   name        TEXT NOT NULL,
   publisher   TEXT NOT NULL,
   source_type TEXT NOT NULL CHECK (source_type IN
-              ('official statistic','survey','modelled estimate','press coverage')),
+              ('official statistic','survey','modelled estimate','press coverage','clinical guidance')),
   url         TEXT,
   data_up_to  TEXT,
   caveats     TEXT NOT NULL
@@ -118,6 +121,22 @@ CREATE TABLE coverage (
   PRIMARY KEY (location_id, year)
 );
 
+CREATE TABLE reporting_sites (
+  year INTEGER NOT NULL,
+  epi_week INTEGER NOT NULL,
+  reporting_locations INTEGER NOT NULL,   -- strip-wide number of locations that reported that week
+  active_locations INTEGER,
+  completeness REAL, timeliness REAL, avg_delay_days REAL,   -- dashboard "Core M&E" indicators
+  low_sites INTEGER NOT NULL CHECK (low_sites IN (0,1)),     -- 1 = fewer than 20 reporting locations
+  PRIMARY KEY (year, epi_week)
+);
+
+CREATE TABLE overview_totals (
+  year INTEGER PRIMARY KEY,
+  consultations INTEGER, pct_reportable_of_consultations REAL, deaths_reportable INTEGER,
+  total_locations INTEGER, active_locations INTEGER, reporting_locations INTEGER, pct_active_reporting REAL
+);
+
 CREATE TABLE facility_domains (
   location_id INTEGER NOT NULL REFERENCES locations(location_id),
   source_id   TEXT    NOT NULL REFERENCES sources(source_id),
@@ -139,7 +158,27 @@ CREATE TABLE medicine_needs (
   medicine_class TEXT    NOT NULL,         -- a CLASS (e.g. oral rehydration), never a drug name or dose
   source_id      TEXT    NOT NULL REFERENCES sources(source_id),
   source_ref     TEXT    NOT NULL,         -- page / table in the source
-  note           TEXT
+  note           TEXT,
+  class_ar       TEXT,
+  source_url     TEXT
+);
+
+-- dated "share of essential medicines at zero stock" figures; sources DISAGREE, so one row per source
+CREATE TABLE supply_signals (
+  as_of          TEXT    NOT NULL,
+  pct_zero_stock INTEGER NOT NULL,
+  wording        TEXT    NOT NULL,
+  source_id      TEXT    NOT NULL REFERENCES sources(source_id),
+  source_ref     TEXT    NOT NULL,
+  caveat         TEXT    NOT NULL
+);
+
+-- HeRAMS NCD / mental-health service availability, Gaza Strip level (hand-read from the PDF)
+CREATE TABLE ncd_services (
+  service TEXT NOT NULL, service_ar TEXT NOT NULL,
+  pct_available INTEGER NOT NULL, pct_partial INTEGER NOT NULL, pct_not_available INTEGER NOT NULL,
+  n_hsdu_expected INTEGER NOT NULL, n_not_up_to_standard INTEGER NOT NULL,
+  source_id TEXT NOT NULL REFERENCES sources(source_id)
 );
 
 -- one row per location x week x disease (all ages), only for weeks that reported.
@@ -174,7 +213,7 @@ SELECT l.key AS location, l.name_en AS location_name, l.name_ar AS location_name
 FROM v_cases_weekly w JOIN locations l USING (location_id) JOIN diseases d USING (disease_id)
 GROUP BY l.key, d.key, w.year;
 
--- grouping 3: by medicine class (empty until medicine_needs has sourced rows)
+-- grouping 3: by medicine class (one row per sourced medicine class x month)
 CREATE VIEW v_by_medicine AS
 SELECT m.medicine_class, d.key AS disease, w.month,
        SUM(w.cases) AS cases, SUM(w.consultations) AS consultations,
@@ -202,6 +241,21 @@ SOURCES = [
      "2025-06-30",
      "Only facilities reporting to HeRAMS; WHO states the analysis is not final. Rafah has no "
      "domain page. Tables hand-extracted from the PDF and checked against rendered pages."),
+    ("who", "WHO fact sheets (treatment sections)", "WHO", "clinical guidance",
+     "https://www.who.int/news-room/fact-sheets", "read 2026-11",
+     "General clinical guidance, not Gaza-specific and not a prescription. Only the CLASS of medicine is "
+     "kept here; the doctor decides the medicine and dose."),
+    ("cdc", "CDC clinical pages (treatment sections)", "U.S. CDC", "clinical guidance",
+     "https://www.cdc.gov", "read 2026-11",
+     "U.S. guidance used where no WHO fact sheet exists; not Gaza-specific. Only the CLASS of medicine is kept."),
+    ("who_sitreps", "WHO oPt Emergency Situation Reports (61, 66, 68, 72)", "WHO", "official statistic",
+     None, "2026-08-31",
+     "Quote Ministry of Health stock figures. Definitions (zero stock vs out of stock) are not stated, "
+     "and different reports give different values for similar dates."),
+    ("health_cluster", "Health Cluster bulletin, November 2025", "Health Cluster oPt", "official statistic",
+     None, "2025-11", "Repeats an OCHA update figure; not an independent measurement."),
+    ("pcbs_whd2026", "World Health Day 2026 statement", "PCBS", "official statistic",
+     None, "2026-03", "Gives no primary source for its stock figures; they conflict with WHO-quoted MoH figures."),
 ]
 
 LOCATIONS = [  # key, en, ar, level
@@ -226,6 +280,10 @@ def read_csv(path: Path) -> list[dict]:
 
 def to_int(v: str) -> int | None:
     return int(v) if v not in ("", None) else None
+
+
+def to_float(v: str) -> float | None:
+    return float(v) if v not in ("", None) else None
 
 
 def build(db_path: Path = DB_PATH) -> dict[str, int]:
@@ -282,6 +340,20 @@ def build(db_path: Path = DB_PATH) -> dict[str, int]:
               int(r["weeks_reported"]), r["missing_weeks"] or None)
              for r in read_csv(CLEAN / "ewars_coverage.csv")])
 
+        sites_csv, tot_csv = CLEAN / "ewars_reporting_sites.csv", CLEAN / "ewars_overview_totals.csv"
+        if sites_csv.exists():
+            con.executemany(
+                "INSERT INTO reporting_sites VALUES (?,?,?,?,?,?,?,?)",
+                [(int(r["year"]), int(r["epi_week"]), int(r["reporting_locations"]), to_int(r["active_locations"]),
+                  to_float(r["completeness"]), to_float(r["timeliness"]), to_float(r["avg_delay_days"]),
+                  int(r["low_sites"])) for r in read_csv(sites_csv)])
+        if tot_csv.exists():
+            con.executemany(
+                "INSERT INTO overview_totals VALUES (?,?,?,?,?,?,?,?)",
+                [(int(r["year"]), int(r["consultations"]), float(r["pct_reportable_of_consultations"]),
+                  int(r["deaths_reportable"]), int(r["total_locations"]), int(r["active_locations"]),
+                  int(r["reporting_locations"]), float(r["pct_active_reporting"])) for r in read_csv(tot_csv)])
+
         if HERAMS.exists():
             con.executemany(
                 "INSERT INTO facility_domains VALUES (?,?,?,?,?,?,?)",
@@ -294,10 +366,25 @@ def build(db_path: Path = DB_PATH) -> dict[str, int]:
                 [(loc[ALIASES[r["governorate"]]], "herams", int(r["hsdu_evaluated"]),
                   int(r["at_least_partially_functioning"]))
                  for r in read_csv(HERAMS / "herams_hsdu_functionality_by_governorate_2025-06.csv")])
+        dkey = {k: i for i, k in con.execute("SELECT disease_id, key FROM diseases")}
+        con.executemany(
+            "INSERT INTO medicine_needs(disease_id, medicine_class, source_id, source_ref, note, class_ar, source_url) "
+            "VALUES (?,?,?,?,?,?,?)",
+            [(dkey[r["disease_key"]], r["medicine_class"], r["source_id"], r["source_ref"], r["note"] or None,
+              r["class_ar"], r["source_url"]) for r in read_csv(REFDIR / "medicine_classes.csv")])
+        con.executemany(
+            "INSERT INTO supply_signals VALUES (?,?,?,?,?,?)",
+            [(r["as_of"], int(r["pct_zero_stock"]), r["wording"], r["source_id"], r["source_ref"], r["caveat"])
+             for r in read_csv(REFDIR / "supply_signals.csv")])
+        con.executemany(
+            "INSERT INTO ncd_services VALUES (?,?,?,?,?,?,?,'herams')",
+            [(r["service"], r["service_ar"], int(r["pct_available"]), int(r["pct_partial"]),
+              int(r["pct_not_available"]), int(r["n_hsdu_expected"]), int(r["n_not_up_to_standard"]))
+             for r in read_csv(REFDIR / "herams_ncd_services_strip_2025-06.csv")])
         con.commit()
         counts = {t: con.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
                   for t in ("sources", "locations", "diseases", "observations", "reporting", "coverage",
-                            "facility_domains", "hsdu_functionality", "medicine_needs")}
+                            "reporting_sites", "overview_totals", "facility_domains", "hsdu_functionality", "medicine_needs", "supply_signals", "ncd_services")}
         bad = con.execute("PRAGMA foreign_key_check").fetchall()
         if bad:
             raise RuntimeError(f"foreign key violations: {bad[:3]}")

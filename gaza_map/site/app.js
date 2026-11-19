@@ -5,10 +5,10 @@
 const I18N = {
   ar: {
     title: "خريطة الأمراض والرعاية في غزة",
-    sub: "بيانات مجمّعة من مصادر عامة عن الأمراض غير الناتجة عن الإصابات المباشرة، 2024–2026",
+    sub: "بيانات مجمّعة من مصادر عامة عن الأمراض غير الناتجة عن الإصابات المباشرة، من 2024 إلى 2026",
     banner: "بيانات مجمّعة من مصادر عامة، وليست نصيحة طبية ولا تشخيصاً. الحالات المعروضة «مشتبه بها» من المرافق التي تبلّغ فقط، والمعدلات تقريبية ولا تُقارَن مع بلدان أخرى. اقرأ «حدود البيانات» أسفل الصفحة.",
     tabs: { disease: "حسب المرض", location: "حسب المكان", medicine: "حسب فئة الدواء" },
-    disease: "المرض", year: "الفترة", yearOpt: (y, w) => y + " (الأسابيع 1–" + w + ")",
+    disease: "المرض", year: "الفترة", yearOpt: (y, w) => y + " · حتى الأسبوع " + w,
     unit: "حالات لكل 1,000 استشارة",
     noData: "لا بيانات كافية", partial: "تغطية ضعيفة", notComparable: "غير قابل للمقارنة",
     legendTitle: "حالات لكل 1,000 استشارة:", legendGap: "لا بيانات كافية / غير قابل للمقارنة",
@@ -22,8 +22,18 @@ const I18N = {
     hsdu: "وحدات الخدمة الصحية التي تعمل ولو جزئياً", noHerams: "لا صفحة لهذه المحافظة في تقرير HeRAMS.",
     under5: "حصة الأطفال دون 5 سنوات من حالات الإسهال المائي الحاد",
     coverage: "تغطية التبليغ الأسبوعي", lateNote: "أُضيف هذا المرض إلى النظام في منتصف 2025؛ أرقام 2025 جزئية ولا تُقارَن بـ 2026.",
+    sitesTitle: "عدد المواقع التي أبلغت (شهرياً، متوسط الأسابيع)",
+    sitesShade: "أشهر بأقل من 20 موقعاً مبلِّغاً: لا تُقارَن بغيرها",
+    sitesNote: (m) => "عدد المواقع المبلِّغة (الوسيط الأسبوعي): " + Object.entries(m).map(([y, v]) => y + ": " + v).join(" · ") + ". في أول 14 أسبوعاً من 2024 أبلغ بين 1 و9 مواقع فقط، لذلك لا تُقارَن معدلات 2024 بالسنتين التاليتين.",
     medTitle: "حسب فئة الدواء",
-    medBody: "هذا القسم فارغ عمداً. ربط المرض بفئة الدواء يحتاج مصدراً لكل سطر (إرشادات WHO أو تقارير الإمداد)، ولا نكتبه من الذاكرة. ولا نعرض أسماء أدوية أو جرعات في أي حال: الدواء يقرره الطبيب.",
+    medBody: "كل سطر هنا له مصدر (صفحات علاج في WHO أو CDC) ويذكر فئة الدواء فقط، لا اسماً ولا جرعة: الدواء والجرعة يقررهما الطبيب. هذه إرشادات عامة وليست خاصة بغزة، وليست وصفة.",
+    medDisease: "المرض", medClasses: "فئات الدواء في إرشادات العلاج", medRate: "حالات لكل 1000 مراجعة (القطاع)", medSrc: "المصدر",
+    medNone: "لا توجد فئة دواء موثّقة لهذه الأمراض (النكاف، الإسهال الدموي، الشلل الرخو الحاد): لا مصدر فلا سطر.",
+    supTitle: "مؤشرات نقص الإمداد: نسبة الأدوية الأساسية عند «صفر مخزون»",
+    supBody: "المصادر تتعارض في تواريخ متقاربة، لذلك لا نجمعها ولا نرسم خطاً واحداً: كل رقم مع مصدره وتاريخه وصياغته الأصلية. أرقام وزارة الصحة كما تنقلها منظمة الصحة العالمية، وتعريف «صفر مخزون» غير مذكور فيها.",
+    supDate: "التاريخ", supPct: "النسبة", supWord: "الصياغة", ncdSvcTitle: "جاهزية خدمات الأمراض المزمنة والصحة النفسية على مستوى القطاع (HeRAMS، يونيو 2025)",
+    ncdSvcNote: "عدد الوحدات المتوقعة صغير في بعض الخدمات (3 إلى 33)، فالنسب تتغير كثيراً بوحدة واحدة. الترجمة العربية لأسماء الخدمات من إعدادنا.",
+    ncdSvcHead: ["الخدمة", "متاحة", "جزئياً", "غير متاحة", "وحدات متوقعة", "دون المعيار"],
     limitsH: "حدود البيانات",
     limits: [
       "المصدر الرئيسي (EWARS) يعدّ حالات مشتبه بها من مرافق مبلِّغة فقط، وعدد هذه المرافق يتغير، لذا نقسم على إجمالي الاستشارات. هذا مقياس تقريبي وليس معدل إصابة.",
@@ -35,8 +45,8 @@ const I18N = {
       "لم نتحقق سريرياً من أي شيء. هذا عرض للبيانات المنشورة وليس تقييماً صحياً.",
     ],
     sourcesH: "المصادر",
-    foot: (m) => "آخر أسبوع في البيانات: " + m.last_year + "، الأسبوع " + m.last_week + ". تاريخ البناء: " + m.generated + ". حدود المحافظات: OCHA / HDX COD-AB.",
-    srcType: { "official statistic": "إحصاء رسمي", "survey": "مسح", "modelled estimate": "تقدير نمذجي", "press coverage": "تغطية صحفية" },
+    foot: (m) => "آخر أسبوع في البيانات: " + ltr(m.last_year) + "، الأسبوع " + ltr(m.last_week) + ". تاريخ البناء: " + ltr(m.generated) + ". حدود المحافظات: OCHA / HDX COD-AB.",
+    srcType: { "official statistic": "إحصاء رسمي", "survey": "مسح", "modelled estimate": "تقدير نمذجي", "press coverage": "تغطية صحفية", "clinical guidance": "إرشادات سريرية" },
     lang: "English",
   },
   en: {
@@ -58,8 +68,18 @@ const I18N = {
     hsdu: "Health service delivery units at least partially functioning", noHerams: "No page for this governorate in the HeRAMS report.",
     under5: "Share of acute watery diarrhoea cases in children under 5",
     coverage: "Weekly reporting coverage", lateNote: "This disease was added to the system in mid-2025; 2025 figures are partial and not comparable with 2026.",
+    sitesTitle: "Number of reporting locations (monthly mean of weeks)",
+    sitesShade: "Months with fewer than 20 reporting locations: not comparable with others",
+    sitesNote: (m) => "Reporting locations (weekly median): " + Object.entries(m).map(([y, v]) => y + ": " + v).join(" · ") + ". In the first 14 weeks of 2024 only 1 to 9 locations reported, so 2024 rates are not comparable with the following years.",
     medTitle: "By medicine class",
-    medBody: "This section is intentionally empty. Linking a disease to a medicine class needs a source for every row (WHO guidance or supply reports) and we will not write it from memory. We never show drug names or doses: medicines are decided by a doctor.",
+    medBody: "Every row here has a source (WHO or CDC treatment pages) and names only a medicine CLASS, never a drug or dose: the doctor decides. This is general guidance, not Gaza-specific and not a prescription.",
+    medDisease: "Disease", medClasses: "Medicine classes in treatment guidance", medRate: "Cases per 1,000 consultations (Strip)", medSrc: "Source",
+    medNone: "No documented medicine class for these diseases (mumps, bloody diarrhoea, acute flaccid paralysis): no source, no row.",
+    supTitle: "Supply signals: share of essential medicines at \"zero stock\"",
+    supBody: "Sources disagree for similar dates, so we do not merge them or draw one line: each figure keeps its source, date and original wording. These are Ministry of Health figures as quoted by others, and \"zero stock\" is not defined in them.",
+    supDate: "As of", supPct: "Share", supWord: "Wording", ncdSvcTitle: "Readiness of chronic-disease and mental-health services, Gaza Strip (HeRAMS, June 2025)",
+    ncdSvcNote: "Some services have very few expected units (3 to 33), so one unit moves the percentages a lot. Arabic service names are our translation.",
+    ncdSvcHead: ["Service", "Available", "Partial", "Not available", "Units expected", "Below standard"],
     limitsH: "Limits of the data",
     limits: [
       "The main source (EWARS) counts suspected cases from reporting facilities only, and the number of facilities changes, so we divide by total consultations. This is a proxy, not an incidence rate.",
@@ -71,8 +91,8 @@ const I18N = {
       "Nothing here is clinically validated. This displays published data; it is not a health assessment.",
     ],
     sourcesH: "Sources",
-    foot: (m) => "Latest week in the data: " + m.last_year + " week " + m.last_week + ". Built " + m.generated + ". Boundaries: OCHA / HDX COD-AB.",
-    srcType: { "official statistic": "official statistic", "survey": "survey", "modelled estimate": "modelled estimate", "press coverage": "press coverage" },
+    foot: (m) => "Latest week in the data: " + ltr(m.last_year) + " week " + ltr(m.last_week) + ". Built " + ltr(m.generated) + ". Boundaries: OCHA / HDX COD-AB.",
+    srcType: { "official statistic": "official statistic", "survey": "survey", "modelled estimate": "modelled estimate", "press coverage": "press coverage", "clinical guidance": "clinical guidance" },
     lang: "العربية",
   },
 };
@@ -90,6 +110,8 @@ function localStorageGet(k) { try { return localStorage.getItem(k); } catch (e) 
 function localStorageSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } }
 
 const T = () => I18N[state.lang];
+// numbers, dates and ranges keep left-to-right order inside right-to-left text
+const ltr = (s) => `<bdi dir="ltr">${esc(s)}</bdi>`;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmt = (n) => (n === null || n === undefined ? "–" : Number(n).toLocaleString("en", { maximumFractionDigits: 2 }));
@@ -169,7 +191,7 @@ function paintMap() {
   if (okVals.length) {
     COLORS.forEach((c, i) => {
       const a = i * sc.step, b = (i + 1) * sc.step;
-      leg.push(`<span><i style="background:${c}"></i>${fmt(a)}–${fmt(b)}</span>`);
+      leg.push(`<span><i style="background:${c}"></i>${ltr(fmt(a) + "–" + fmt(b))}</span>`);
     });
   }
   leg.push(`<span><i style="background:${GAP_COLOR}"></i>${esc(t.legendGap)}</span>`);
@@ -187,7 +209,11 @@ function trendSvg(disease) {
   const n = DATA.months.length;
   const x = (i) => m.l + (i / (n - 1)) * (W - m.l - m.r);
   const y = (v) => H - m.b - (v / ymax) * (H - m.t - m.b);
+  const thr = DATA.meta.low_sites_threshold;
   let svg = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(T().trend)}" dir="ltr">`;
+  DATA.sites_month.forEach((n, i) => {
+    if (n !== null && n < thr) svg += `<rect x="${(x(i) - 8).toFixed(1)}" y="${m.t}" width="16" height="${H - m.t - m.b}" fill="#f3e3b5" opacity=".7"/>`;
+  });
   for (let g = 0; g <= 4; g++) {
     const v = (ymax * g) / 4;
     svg += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#e5e2d9"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${fmt(Math.round(v * 10) / 10)}</text>`;
@@ -202,12 +228,30 @@ function trendSvg(disease) {
     const dash = k === "strip" ? ' stroke-dasharray="5 3"' : "";
     svg += `<path d="${d}" fill="none" stroke="${LINE_COLORS[k]}" stroke-width="${k === "strip" ? 2.5 : 1.6}"${dash}/>`;
     pts.forEach(([mi, cases, cons, v, wk]) => {
-      svg += `<circle cx="${x(mi).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${k === "strip" ? 2.6 : 2}" fill="${LINE_COLORS[k]}"><title>${esc(locName(loc(k)))} · ${DATA.months[mi]}: ${fmt(v)} (${fmt(cases)} ${esc(T().cases)}, ${wk} ${esc(T().weeks)})</title></circle>`;
+      const low = DATA.sites_month[mi] !== null && DATA.sites_month[mi] < thr;
+      svg += `<circle cx="${x(mi).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${k === "strip" ? 2.6 : 2}" fill="${low ? "#fff" : LINE_COLORS[k]}" stroke="${LINE_COLORS[k]}" stroke-width="${low ? 1.4 : 0}"><title>${esc(locName(loc(k)))} · ${DATA.months[mi]}: ${fmt(v)} (${fmt(cases)} ${esc(T().cases)}, ${wk} ${esc(T().weeks)}; ${esc(String(DATA.sites_month[mi]))} sites)</title></circle>`;
     });
   });
   svg += "</svg>";
   const key = keys.map((k) => `<span class="${k === "strip" ? "dash" : ""}" style="--c:${LINE_COLORS[k]}">${esc(k === "strip" ? T().strip : locName(loc(k)))}</span>`).join("");
-  return svg + `<div class="key">${key}</div>`;
+  return svg + `<div class="key">${key}<span style="--c:#f3e3b5;height:auto">${esc(T().sitesShade)}</span></div>` + sitesSvg();
+}
+
+/* how many locations reported: the denominator behind every rate */
+function sitesSvg() {
+  const W = 620, H = 90, m = { l: 44, r: 10, t: 6, b: 18 };
+  const vals = DATA.sites_month, n = vals.length, thr = DATA.meta.low_sites_threshold;
+  const ymax = Math.max(...vals.filter((v) => v !== null)) * 1.1;
+  const bw = (W - m.l - m.r) / n;
+  const y = (v) => H - m.b - (v / ymax) * (H - m.t - m.b);
+  let svg = `<h3>${esc(T().sitesTitle)}</h3><svg class="chart" viewBox="0 0 ${W} ${H}" dir="ltr" role="img" aria-label="${esc(T().sitesTitle)}">`;
+  svg += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(thr)}" y2="${y(thr)}" stroke="#c0392b" stroke-dasharray="3 3"/><text x="${m.l - 6}" y="${y(thr) + 4}" text-anchor="end">${thr}</text>`;
+  vals.forEach((v, i) => {
+    if (v === null) return;
+    svg += `<rect x="${(m.l + i * bw + 1).toFixed(1)}" y="${y(v).toFixed(1)}" width="${(bw - 2).toFixed(1)}" height="${(H - m.b - y(v)).toFixed(1)}" fill="${v < thr ? "#e0b84c" : "#7f93a3"}"><title>${DATA.months[i]}: ${v}</title></rect>`;
+  });
+  DATA.months.forEach((mo, i) => { if (mo.endsWith("-01") || mo.endsWith("-07")) svg += `<text x="${(m.l + i * bw + bw / 2).toFixed(1)}" y="${H - 4}" text-anchor="middle">${mo}</text>`; });
+  return svg + `</svg><p class="note">${esc(T().sitesNote(DATA.sites_median))}</p>`;
 }
 
 function rankingHtml() {
@@ -262,8 +306,36 @@ function locationHtml() {
     <table><thead><tr><th>${esc(t.disease_col)}</th>${head}</tr></thead><tbody>${body}</tbody></table>
     <p class="note">* ${esc(t.partial)}</p>
     ${herams}
-    <h3>${esc(t.under5)}</h3><p>${esc(u5txt)}</p>
-    <h3>${esc(t.coverage)}</h3><p class="note">${esc(covTxt)}</p>`;
+    <h3>${esc(t.under5)}</h3><p>${ltr(u5txt)}</p>
+    <h3>${esc(t.coverage)}</h3><p class="note">${ltr(covTxt)}</p>`;
+}
+
+function medicineHtml() {
+  const t = T();
+  const yr = String(state.year || DATA.meta.last_year);
+  const srcName = (id) => (DATA.meta.sources.find((s) => s.id === id) || {}).name || id;
+  const rowsM = DATA.diseases.filter((d) => DATA.medicine[d.key]).map((d) => {
+    const c = cell(d.key, "strip", yr);
+    const cls = DATA.medicine[d.key].map((m) => {
+      const label = state.lang === "ar" ? m.class_ar : m.class_en;
+      const link = m.url ? `<a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.source.toUpperCase())}</a>` : esc(m.source);
+      return `<li>${esc(label)} <span class="note">· ${link} · ${ltr(m.ref)}${m.note && state.lang !== "ar" ? " · " + esc(m.note) : ""}</span></li>`;
+    }).join("");
+    const rate = c && (c.status === "ok" || c.status === "partial") ? ltr(fmt(c.per_1000)) : "–";
+    return `<tr><td>${esc(diseaseName(d))}</td><td><ul class="plain">${cls}</ul></td><td class="num">${rate}</td></tr>`;
+  }).join("");
+  const sup = DATA.supply.map((r) => `<tr><td>${ltr(r.as_of)}</td><td class="num">${ltr(r.pct + "%")}</td><td>${ltr(r.wording)}</td>
+    <td>${esc(srcName(r.source))} · ${ltr(r.ref)}<br><span class="note">${esc(r.caveat)}</span></td></tr>`).join("");
+  const ncd = DATA.herams.ncd.map((r) => `<tr><td>${esc(state.lang === "ar" ? r.ar : r.en)}${stackHtml([r.available, r.partial, r.not_available, 0])}</td>
+    <td class="num">${ltr(r.available + "%")}</td><td class="num">${ltr(r.partial + "%")}</td><td class="num">${ltr(r.not_available + "%")}</td>
+    <td class="num">${ltr(String(r.expected))}</td><td class="num">${ltr(r.not_standard + "/" + r.expected)}</td></tr>`).join("");
+  return `<h2>${esc(t.medTitle)}</h2><p class="note">${esc(t.medBody)}</p>
+    <table><thead><tr><th>${esc(t.medDisease)}</th><th>${esc(t.medClasses)}</th><th class="num">${esc(t.medRate)} · ${ltr(yr)}</th></tr></thead><tbody>${rowsM}</tbody></table>
+    <p class="note">${esc(t.medNone)}</p>
+    <h3>${esc(t.supTitle)}</h3><p class="note">${esc(t.supBody)}</p>
+    <table><thead><tr><th>${esc(t.supDate)}</th><th class="num">${esc(t.supPct)}</th><th>${esc(t.supWord)}</th><th>${esc(t.medSrc)}</th></tr></thead><tbody>${sup}</tbody></table>
+    <h3>${esc(t.ncdSvcTitle)}</h3><p class="note">${esc(t.ncdSvcNote)}</p>
+    <table><thead><tr>${t.ncdSvcHead.map((h, i) => `<th${i ? ' class="num"' : ""}>${esc(h)}</th>`).join("")}</tr></thead><tbody>${ncd}</tbody></table>`;
 }
 
 /* ---- rendering ---- */
@@ -295,22 +367,36 @@ function render() {
   } else if (state.tab === "location") {
     panel = locationHtml();
   } else {
-    panel = `<h2>${esc(t.medTitle)}</h2><p>${esc(t.medBody)}</p>`;
+    panel = medicineHtml();
   }
   $("panel").innerHTML = panel;
   $("t-limits-h").textContent = t.limitsH;
   $("t-limits").innerHTML = t.limits.map((s) => `<li>${esc(s)}</li>`).join("");
   $("t-sources-h").textContent = t.sourcesH;
   $("sources").innerHTML = DATA.meta.sources.map((s) =>
-    `<li><strong>${esc(s.name)}</strong> — ${esc(s.publisher)} · ${esc(t.srcType[s.type] || s.type)} · ${esc(s.data_up_to)}<br><span class="note">${esc(s.caveats)}</span></li>`).join("");
-  $("t-foot").textContent = t.foot(DATA.meta);
+    `<li><strong>${esc(s.name)}</strong> — ${esc(s.publisher)} · ${esc(t.srcType[s.type] || s.type)} · ${ltr(s.data_up_to)}<br><span class="note">${esc(s.caveats)}</span></li>`).join("");
+  $("t-foot").innerHTML = t.foot(DATA.meta);
   document.title = t.title;
   if (map) setTimeout(() => map.invalidateSize(), 0);
+}
+
+/* Shareable views: ?lang=en&tab=location&disease=awd&year=2025&loc=rafah. Every value is checked against
+   the data, so a hand-edited link can never inject anything into the page. */
+function applyUrlParams() {
+  const q = new URLSearchParams(location.search);
+  if (["ar", "en"].includes(q.get("lang"))) state.lang = q.get("lang");
+  if (["disease", "location", "medicine"].includes(q.get("tab"))) state.tab = q.get("tab");
+  if (dis(q.get("disease") || "")) state.disease = q.get("disease");
+  if (Object.keys(DATA.yearly.ari.strip).includes(q.get("year"))) state.year = q.get("year");
+  const l = q.get("loc");
+  if (l && l !== "strip" && loc(l)) state.loc = l;
+  if (state.tab === "location" && !state.loc) state.loc = "gaza";
 }
 
 async function main() {
   const [d, g] = await Promise.all([fetch("data/data.json").then((r) => r.json()), fetch("data/governorates.geojson").then((r) => r.json())]);
   DATA = d; GEO = g;
+  applyUrlParams();
   initMap();
   $("lang").addEventListener("click", () => { state.lang = state.lang === "ar" ? "en" : "ar"; localStorageSet("lang", state.lang); render(); });
   $("tabs").addEventListener("click", (e) => { const b = e.target.closest("button[data-tab]"); if (b) { state.tab = b.dataset.tab; if (state.tab === "location" && !state.loc) state.loc = "gaza"; render(); } });

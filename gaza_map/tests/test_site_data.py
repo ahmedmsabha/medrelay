@@ -95,12 +95,14 @@ def test_late_added_2025_not_comparable_in_export(exported):
 
 
 @needs_clean
-def test_export_carries_no_medicine_claims_and_every_source_has_caveats(exported):
+def test_export_medicine_rows_are_sourced_and_every_source_has_caveats(exported):
     data, _ = exported
-    assert data["meta"]["medicine_needs_rows"] == 0
+    assert data["meta"]["medicine_needs_rows"] == sum(len(v) for v in data["medicine"].values()) >= 20
+    assert all(m["source"] in ("who", "cdc") and m["url"] for v in data["medicine"].values() for m in v)
+    assert len(data["supply"]) == 6 and len(data["herams"]["ncd"]) == 20
     assert all(s["caveats"] and s["type"] for s in data["meta"]["sources"])
-    text = json.dumps(data)
-    assert "dose" not in text.lower()
+    text = json.dumps(data["medicine"]).lower()  # classes only: no dose wording, no strengths
+    assert "dose" not in text and " mg" not in text
 
 
 @needs_clean
