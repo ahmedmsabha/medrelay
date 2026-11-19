@@ -1,0 +1,45 @@
+# Publish the Gaza Disease & Care Map (static files in gaza_map/site) to GitHub Pages.
+# Only that folder is uploaded: no raw data, database or MedRelay code is published.
+name: Deploy Gaza map to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["gaza_map/**", ".github/workflows/gaza-map-pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pytest
+      # tests that need the raw downloads (data/ is git-ignored) skip themselves in CI
+      - run: python -W ignore -m pytest gaza_map -q
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: gaza_map/site
+      - id: deployment
+        uses: actions/deploy-pages@v4
